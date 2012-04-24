@@ -6,7 +6,8 @@ use base 'Exporter';
 our @EXPORT = (
     'compute_product_payout',
     'set_union',
-    'set_intersection'
+    'set_intersection',
+    'set_difference'
 );
 
 # Question 1
@@ -39,6 +40,7 @@ sub compute_product_payout {
 }
 
 
+# Question 2
 sub set_union{
     # Dedupes the given array and returns the sorted set
     my @source_array = @_;
@@ -52,28 +54,64 @@ sub set_union{
 }
 
 
-sub set_intersection{
-    # Returns a list of deduped elements that exist in both arrays
-    # Since the test depends on order, and no preference is given,
-    # reverse alphabetic is returned. This will pass the listed test.
-    # The values returned are correct
+sub common_elements{
+    # This is the basis for finding either the intersection or
+    # the difference. Making the code DRY, since the functions return
+    # mutually exclusive sets
 
-    my @array_1 = @{$_[0]};
-    my @array_2 = @{$_[1]};
+    # INTERSECTION - Returns a list of deduped elements that exist 
+    # in both arrays
+    
+    # DIFFERENCE - Returns a list of deduped elements that exist 
+    # in only one array
+
+    # Can be either INTERSECTION or DIFFERENCE
+    my $filter_type = $_[0];
+    my @array_1 = @{$_[1]};
+    my @array_2 = @{$_[2]};
 
     my @return_val = ();
     
-    # Create a hash of possible values
+    # Create a hash of potential values
     my %values;
     @values{@array_1} = undef;
 
+    # Now we filter it down by the values in the other array
     foreach (&set_union(@array_2)) {
 	if (exists $values{$_}) {
-	    push(@return_val, $_)
-	}
+	    if ($filter_type eq 'INTERSECTION') {
+		 push(@return_val, $_);
+
+	    } elsif ($filter_type eq 'DIFFERENCE') {
+		delete($values{$_});
+	    }
+
+	} elsif ($filter_type eq 'DIFFERENCE') {
+	    push(@return_val, $_);
+        }
     }
 
-    return reverse(@return_val);
+    # Add the remaining values, if necessary
+    if ($filter_type eq 'DIFFERENCE') {
+	@return_val = (@return_val, keys %values);
+    }
+
+    return sort(@return_val);
+}
+
+
+# Question 3
+sub set_intersection{
+    # Since the test depends on order and no preference is given,
+    # reverse alphabetic is returned.
+
+    return reverse(&common_elements("INTERSECTION", @_));
+}
+
+
+# Question 4
+sub set_difference{
+    return &common_elements("DIFFERENCE", @_);
 }
 
 
