@@ -8,7 +8,8 @@ our @EXPORT = (
     'set_union',
     'set_intersection',
     'set_difference',
-    'set_eq'
+    'set_eq',
+    'deep_set_eq'
 );
 
 # Question 1
@@ -124,16 +125,60 @@ sub set_eq{
     my @array_2 = sort(@{$_[1]});
 
     if (scalar(@array_1) != scalar(@array_2)) {
-	return "";
+	return 0;
     }
 
     foreach (0..(scalar(@array_1) - 1)) {
-	if ($array_1[$_] != $array_2[$_]) {
-	    return "";
+	if ("$array_1[$_]" ne "$array_2[$_]") {
+	    return 0;
 	}
     }
     
     # If we made it this far, it's true
     return 1;
 }
+
+
+# Question 6
+sub deep_set_eq{
+    # test if potentially nested arrays are equal. We actually don't
+    # do any comparisons in this function, rather it creates sets
+    # to make use of set_eq
+
+    # This is easiest if we do this using recursion
+
+    my @array_1 = @{$_[0]};
+    my @array_2 = @{$_[1]};
+    
+    # First, we test the scalars
+    my @scalar_array_1 = grep(!ref($_), @array_1);
+    my @scalar_array_2 = grep(!ref($_), @array_2);
+    if (!set_eq(\@scalar_array_1, \@scalar_array_2)) {
+	return 0;
+    }
+
+    my @nest_array_1 = grep(ref($_) eq 'ARRAY', @array_1);
+    my @nest_array_2 = grep(ref($_) eq 'ARRAY', @array_2);
+
+    foreach my $x (@nest_array_1) {
+	my $no_match_flag = 1;
+	foreach (0..(scalar(@nest_array_2) - 1)) {
+	    if (deep_set_eq($x, $nest_array_2[$_])) {
+		$no_match_flag = 0;
+		delete($nest_array_2[$_]);
+	    }
+	}
+	if ($no_match_flag) {
+	    return 0;
+	}
+    }
+
+    if (scalar(@nest_array_2)) {
+	return 0;
+    } else {
+	return 1;
+    }
+}
+
+
 1;
