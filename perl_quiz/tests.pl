@@ -64,4 +64,46 @@ ok(
 );
 
 
+
+
+#Question 7
+print "\n\nRunning Singleton::Base tests\n";
+use Singleton::Base;
+{
+    package Foo;
+    use base qw(Singleton::Base);
+}
+
+{
+    package Bar;
+    use base qw(Singleton::Base);
+}
+
+# ====== tests for Foo =========
+my $foo1 = Foo->new;
+
+$foo1->value('foo');
+is( $foo1->value, 'foo' );
+
+my $foo2 = Foo->new;
+is( $foo2->value, 'foo' );
+
+$foo2->value('food is tasty');
+is( $foo2->value, 'food is tasty' );
+is( $foo1->value, 'food is tasty' );
+
+# ====== tests for Bar =========
+my $bar1 = Bar->new;
+
+$bar1->value('bar');
+is( $bar1->value, 'bar' );
+
+my $bar2 = Bar->new;
+is( $bar2->value, 'bar' );
+
+$bar2->value('bards play music');
+is( $bar2->value, 'bards play music');
+is( $bar1->value, 'bards play music');
+
+
 1;
