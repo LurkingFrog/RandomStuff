@@ -1,0 +1,131 @@
+﻿1. Implement a function named compute_product_payout(). It will take as its input a single
+   hash reference, and return as its output a single hash reference. Product payouts are
+   calculated as follows:
+
+   * for a 'tiny' sized product, payout is 5% of the product base price.
+   * for a 'medium' sized product, payout is 50% of the product base price.
+   * for a 'large' sized product, payout is 100% of the product base price.
+   * for a 'mammoth' sized product, payout is 200% of the product base price.
+
+   Assume your function will be run under a test harness similar to the following:
+
+      use Test::More;
+
+      $result = compute_product_payout({size => 'mammoth', base_price => 2.31});
+      is $result->{payout}, 4.62;
+
+      $result = compute_product_payout({size => 'tiny', base_price => 100});
+      is $result->{payout}, 5;
+
+2. Implement a function, set_union(), which returns the distinct members of its input.
+   It should accept a list of input and return a list as output.
+
+   Assume your function will be run under a test harness similar to the following:
+
+      use Test::More;
+
+      @union = set_union(1, 2, 4, 3, 7, 4, 3, 1);
+      is_deeply( [@union], [1, 2, 3, 4, 7] );
+
+   set_union() may return items in the original order they were given or in some other order.
+
+3. Implement a function, set_intersetion(), which returns the overlapping members of
+   two lists. It should accept two list references as input, and return a list as
+   its output.
+
+   Test harness:
+
+      use Test::More;
+
+      @overlapping = set_intersection( ['a', 'b', 2, 7, 0], [9, 10, 3, 'c', 'a', 2] );
+      is_deeply( [@overlapping], ['a', 2] );
+
+   Again, maintaining the original order is not a requirement of this function.
+
+
+
+4. Implement a function, set_difference(), which returns the non-overlapping members of
+   two lists. It should accept two list references as input, and return a list as
+   its output.
+
+   Test harness:
+
+     use Test::More;
+     @difference = set_difference( [1..5], [4..8] );
+     is_deeply( [@difference], [1..3, 6..8] );
+
+5. Implement a function, set_eq(), which accepts two list references as input. It will
+   return true if the two inputs are the same, and return false if they are different.
+
+   Test harness:
+
+      use Test::More;
+
+      ok( set_eq([1, 2, 3], [3, 1, 2]) );
+      ok( !set_eq([1, 2, 3], [3, 3, 1, 2]) );
+
+    For the purpose of this question you need not worry about list references being
+    deeply nested.
+
+6. Implement a function, deep_set_eq(), which behaves like set_eq() but handles nested
+   array references.
+
+   Test harness:
+
+      use Test::More;
+
+      ok( deep_set_eq(
+          [1, 2, [4, 3], ['banana', 'apple']],
+          [['apple', 'banana'], 2, [3, 4], 1]
+      ) );
+      ok( !deep_set_eq(
+          [1, 2, [4, 3], ['cherimoya', 'apple']],
+          [['apple', 'banana'], 2, [3, 4], 1]
+      ) );
+
+
+
+
+
+
+
+
+7. Implement a singleton base class named Singleton::Base. Classes which inherit from
+   Singleton::Base should be singletons. Test harness:
+
+      use Test::More;
+
+      {
+          package Foo;
+          use base qw(Singleton::Base);
+      }
+
+      {
+          package Bar;
+          use base qw(Singleton::Base);
+      }
+
+      # ====== tests for Foo =========
+      my $foo1 = Foo->new;
+
+      $foo1->value('foo');
+      is( $foo1->value, 'foo' );
+
+      my $foo2 = Foo->new;
+      is( $foo2->value, 'foo' );
+      $foo2->value('food is tasty');
+      is( $foo2->value, 'food is tasty' );
+      is( $foo1->value, 'food is tasty' );
+
+      # ====== tests for Bar =========
+      my $bar1 = Bar->new;
+
+      $bar1->value('bar');
+      is( $bar1->value, 'bar' );
+
+      my $bar2 = Bar->new;
+      is( $bar2->value, 'bar' );
+      $bar2->value('bards play music');
+      is( $bar2->value, 'bards play music');
+      is( $bar1->value, 'bards play music');
+
