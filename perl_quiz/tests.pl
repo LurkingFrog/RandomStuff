@@ -36,10 +36,17 @@ is_deeply([@overlapping], ['a', 2]);
 is_deeply([@overlapping], []);
 
 
-# Tests for question 3
+# Tests for question 4
 print "\n\nset_difference tests\n";
 my @difference = set_difference( [1..5], [4..8] );
 is_deeply([@difference], [1..3, 6..8]);
+
+
+# Tests for question 5
+print "\n\nset_eq tests\n";
+ok( set_eq([1, 2, 3], [3, 1, 2]) );
+ok( !set_eq([1, 2, 3], [3, 3, 1, 2]) );
+
 
 
 1;

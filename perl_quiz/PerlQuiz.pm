@@ -7,7 +7,8 @@ our @EXPORT = (
     'compute_product_payout',
     'set_union',
     'set_intersection',
-    'set_difference'
+    'set_difference',
+    'set_eq'
 );
 
 # Question 1
@@ -115,4 +116,24 @@ sub set_difference{
 }
 
 
+# Question 5
+sub set_eq{
+    # Test if two arrays are equal
+
+    my @array_1 = sort(@{$_[0]});
+    my @array_2 = sort(@{$_[1]});
+
+    if (scalar(@array_1) != scalar(@array_2)) {
+	return "";
+    }
+
+    foreach (0..(scalar(@array_1) - 1)) {
+	if ($array_1[$_] != $array_2[$_]) {
+	    return "";
+	}
+    }
+    
+    # If we made it this far, it's true
+    return 1;
+}
 1;
